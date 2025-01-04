@@ -38,7 +38,7 @@ Ensure you have the following installed:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/dentiapro.git
+   git clone https://github.com/Outtacosmos-ai/Tenant_Manager.git
    cd dentiapro
    ```
 
