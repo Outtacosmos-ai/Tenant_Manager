@@ -1,3 +1,1 @@
-from django.db import models
-
-# Create your models here.
+# This file is intentionally left empty as user management is handled in the core app.
