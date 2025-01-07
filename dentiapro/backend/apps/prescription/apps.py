@@ -1,10 +1,9 @@
-from django.apps import AppConfig
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .models import Prescription
 
-class PrescriptionConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.prescription'
-    verbose_name = 'Prescription Management'
-
-    def ready(self):
-        import apps.prescription.signals  # noqa
-
+@receiver(post_save, sender=Prescription)
+def prescription_created(sender, instance, created, **kwargs):
+    if created:
+        # Handle new prescription logic here
+        pass
