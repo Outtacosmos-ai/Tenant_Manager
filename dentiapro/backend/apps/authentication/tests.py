@@ -11,3 +11,4 @@ class UserModelTest(TestCase):
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
+
