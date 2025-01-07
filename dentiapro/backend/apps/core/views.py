@@ -1,3 +1,2 @@
-from django.shortcuts import render
+# This file is intentionally left empty as core functionality is handled in models and admin.
 
-# Create your views here.
