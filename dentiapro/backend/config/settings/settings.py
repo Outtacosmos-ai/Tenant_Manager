@@ -47,12 +47,12 @@ TENANT_APPS = (
     'apps.dentist',
     'apps.prescription',
     'apps.patient',
+    'apps.appointment',
     'apps.billing',
     'apps.appointments',
-    'apps.medical_records', 
-    'apps.cabinet',
+    'apps.medical_records',
     'apps.inventory',
-    'apps.tenant'
+    'apps.tenant',
 )
 
 INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
