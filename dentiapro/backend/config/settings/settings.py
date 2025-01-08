@@ -41,7 +41,7 @@ SHARED_APPS = (
 
 TENANT_APPS = (
     # Local tenant apps
-    'apps.core',
+    
     'apps.users',
     'apps.cabinet',
     'apps.dentist',
