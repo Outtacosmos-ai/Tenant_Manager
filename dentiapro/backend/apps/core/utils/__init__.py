@@ -1,2 +1,0 @@
-from .middleware import TenantMiddleware
-
