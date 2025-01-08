@@ -1,10 +1,16 @@
 from django.db import models
+from django_tenants.models import TenantMixin, DomainMixin
 
-class Cabinet(models.Model):
+class Cabinet(TenantMixin):
     name = models.CharField(max_length=100)
-    address = models.TextField()
-    contact_number = models.CharField(max_length=20)
-    email = models.EmailField()
+    paid_until = models.DateField()
+    on_trial = models.BooleanField()
+    created_on = models.DateField(auto_now_add=True)
 
-    def _str_(self):
+    auto_create_schema = True
+
+    def __str__(self):
         return self.name
+
+class Domain(DomainMixin):
+    pass
