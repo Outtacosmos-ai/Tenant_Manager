@@ -120,7 +120,7 @@
 - *URL*: /api/consultations/<id>/
 - *Method*: DELETE
 - *Success Response*: 204 No Content
-- *Error Response*: 404 NotFound
+- *Error Response*: 404 Not Found
 
 ## Monitoring
 
