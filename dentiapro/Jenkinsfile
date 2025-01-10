@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = "dentiapro:${BUILD_NUMBER}"
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -12,55 +8,31 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
-                script {
-                    docker.build(DOCKER_IMAGE)
-                }
+                sh 'docker-compose build'
             }
         }
 
-        stage('Run Tests') {
+        stage('Test') {
             steps {
-                script {
-                    docker.image(DOCKER_IMAGE).inside {
-                        sh 'python manage.py test'
-                    }
-                }
+                sh 'docker-compose run --rm web python manage.py test'
             }
         }
 
-        stage('Push to Registry') {
+        stage('Deploy') {
             when {
                 branch 'main'
             }
             steps {
-                script {
-                    docker.withRegistry('https://your-registry-url', 'registry-credentials-id') {
-                        docker.image(DOCKER_IMAGE).push()
-                    }
-                }
-            }
-        }
-
-        stage('Deploy to Production') {
-            when {
-                branch 'main'
-            }
-            steps {
-                script {
-                    // Add deployment steps here
-                    // For example, updating a Kubernetes deployment
-                    // or running docker-compose on a remote server
-                }
+                sh 'docker-compose up -d'
             }
         }
     }
 
     post {
         always {
-            // Clean up Docker images
-            sh "docker rmi ${DOCKER_IMAGE}"
+            sh 'docker-compose down'
         }
     }
 }
