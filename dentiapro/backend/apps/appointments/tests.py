@@ -12,12 +12,16 @@ class AppointmentModelTest(TestCase):
         self.dentist_user = User.objects.create_user(username='dentist', password='testpass123')
         self.dentist = Dentist.objects.create(user=self.dentist_user, specialization='General')
         self.appointment = Appointment.objects.create(
+            tenant=self.patient.tenant,  # Ensure multi-tenancy support
             patient=self.patient,
             dentist=self.dentist,
-            date_time=timezone.now(),
-            reason='Checkup'
+            date=timezone.now().date() + timezone.timedelta(days=1),
+            start_time=timezone.now().time(),
+            end_time=timezone.now().time(),
+            status='scheduled',
         )
 
     def test_appointment_creation(self):
         self.assertTrue(isinstance(self.appointment, Appointment))
-        self.assertEqual(self.appointment.__str__(), f"{self.patient} - {self.appointment.date_time}")
+        self.assertEqual(self.appointment.status, 'scheduled')
+        self.assertEqual(str(self.appointment), f"{self.patient} - {self.appointment.date} {self.appointment.start_time}")
