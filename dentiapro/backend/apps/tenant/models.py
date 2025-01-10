@@ -1,16 +1,20 @@
 from django.db import models
-from django_tenants.models import TenantMixin, DomainMixin
+from django.contrib.auth import get_user_model
 
-class Tenant(TenantMixin):
+class Tenant(models.Model):
     name = models.CharField(max_length=100)
-    paid_until = models.DateField()
-    on_trial = models.BooleanField()
-    created_on = models.DateField(auto_now_add=True)
+    subdomain = models.CharField(max_length=100, unique=True)
+    address = models.TextField()
+    phone = models.CharField(max_length=20)
+    email = models.EmailField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    owner = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='owned_tenants')
+    is_active = models.BooleanField(default=True)
 
-    auto_create_schema = True
+    class Meta:
+        db_table = 'tenants'
+        ordering = ['-created_at']
 
-    def _str_(self):
+    def __str__(self):
         return self.name
-
-class Domain(DomainMixin):
-    pass
