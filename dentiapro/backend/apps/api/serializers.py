@@ -1,17 +1,23 @@
 from rest_framework import serializers
+from apps.cabinet.models import Cabinet
 from apps.appointments.models import Appointment
-from apps.patient.models import Patient
+from apps.medical_records.models import MedicalRecord
 from apps.billing.models import Invoice
 from apps.inventory.models import InventoryItem
+
+class CabinetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cabinet
+        fields = '__all__'
 
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
         fields = '__all__'
 
-class PatientSerializer(serializers.ModelSerializer):
+class MedicalRecordSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Patient
+        model = MedicalRecord
         fields = '__all__'
 
 class InvoiceSerializer(serializers.ModelSerializer):
