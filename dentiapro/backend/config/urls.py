@@ -9,34 +9,42 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
+# JWT API endpoints
+jwt_urlpatterns = [
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+]
+
+# Application-specific API endpoints
+api_urlpatterns = [
+    path('auth/', include('apps.authentication.urls')),
+    path('users/', include('apps.users.urls')),
+    path('tenants/', include('apps.tenant.urls')),
+    path('cabinets/', include('apps.cabinet.urls')),
+    path('appointments/', include('apps.appointments.urls')),
+    path('billing/', include('apps.billing.urls')),
+    path('inventory/', include('apps.inventory.urls')),
+    path('medical-records/', include('apps.medical_records.urls')),
+    path('prescriptions/', include('apps.prescription.urls')),
+]
+
+# Main urlpatterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # JWT endpoints
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    
-    # OAuth2 endpoints
+    # JWT and OAuth2 endpoints
+    path('api/jwt/', include(jwt_urlpatterns)),
     path('oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     
-    # API endpoints
-    path('api/', include('apps.api.urls')),
-    path('api/auth/', include('apps.authentication.urls')),
-    path('api/users/', include('apps.users.urls')),
-    path('api/tenants/', include('apps.tenant.urls')),
-    path('api/cabinets/', include('apps.cabinet.urls')),
-    path('api/appointments/', include('apps.appointments.urls')),
-    path('api/billing/', include('apps.billing.urls')),
-    path('api/inventory/', include('apps.inventory.urls')),
-    path('api/medical-records/', include('apps.medical_records.urls')),
-    path('api/prescriptions/', include('apps.prescription.urls')),
-    
     # Prometheus metrics
-    path('', include('django_prometheus.urls')),
+    path('metrics/', include('django_prometheus.urls')),
+
+    # API endpoints
+    path('api/', include(api_urlpatterns)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# Add debug toolbar URLs in debug mode
+# Debug toolbar endpoints (only in DEBUG mode)
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [
