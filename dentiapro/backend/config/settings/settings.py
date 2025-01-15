@@ -10,7 +10,9 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-secret-key-here')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("DJANGO_SECRET_KEY is not set in the environment variables")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
@@ -25,7 +27,7 @@ SHARED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Third party apps
     'rest_framework',
     'django_filters',
@@ -33,7 +35,7 @@ SHARED_APPS = (
     'oauth2_provider',
     'corsheaders',
     'drf_yasg',
-    
+
     # Local shared apps
     'apps.authentication',
     'apps.tenant',
@@ -41,7 +43,6 @@ SHARED_APPS = (
 
 TENANT_APPS = (
     # Local tenant apps
-    
     'apps.users',
     'apps.cabinet',
     'apps.dentist',
@@ -98,6 +99,10 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
+        'OPTIONS': {
+            'connect_timeout': 10,
+            'application_name': 'dentiapro',
+        },
     }
 }
 
