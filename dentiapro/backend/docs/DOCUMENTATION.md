@@ -181,6 +181,9 @@ server {
 backend/
 ├── apps/
 │   ├── appointments/
+│   ├── users/
+│   ├── tenants/
+
 │   ├── medical_records/
 │   ├── billing/
 │   └── inventory/
