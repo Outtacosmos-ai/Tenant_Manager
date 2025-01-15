@@ -8,6 +8,9 @@ from functools import wraps
 class CustomResponse:
     @staticmethod
     def success(data=None, message=None, status_code=status.HTTP_200_OK):
+        """
+        Standard response for success.
+        """
         response_data = {
             'status': 'success',
             'message': message,
@@ -17,6 +20,9 @@ class CustomResponse:
 
     @staticmethod
     def error(message=None, errors=None, status_code=status.HTTP_400_BAD_REQUEST):
+        """
+        Standard response for error.
+        """
         response_data = {
             'status': 'error',
             'message': message,
@@ -25,24 +31,28 @@ class CustomResponse:
         return Response(response_data, status=status_code)
 
 class TenantViewSet(viewsets.ModelViewSet):
+    """
+    Base ViewSet that filters querysets and performs actions based on the tenant context.
+    """
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         """
-        Filter queryset by tenant
+        Filter queryset by tenant to ensure multi-tenant isolation.
         """
         queryset = super().get_queryset()
         return queryset.filter(tenant=self.request.tenant)
     
     def perform_create(self, serializer):
         """
-        Add tenant to object on creation
+        Add tenant context to object during creation.
         """
         serializer.save(tenant=self.request.tenant)
 
 def tenant_required(f):
     """
-    Decorator to ensure request has tenant
+    Decorator to ensure that request contains tenant information.
+    Raises PermissionDenied if tenant is not provided.
     """
     @wraps(f)
     def wrapper(request, *args, **kwargs):
@@ -53,7 +63,7 @@ def tenant_required(f):
 
 def get_client_ip(request):
     """
-    Get client IP address from request
+    Get client IP address from request headers or direct connection.
     """
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -62,10 +72,11 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-# Custom mixins
+# Custom Mixins for multi-tenancy support
+
 class TenantMixin:
     """
-    Mixin to filter querysets by tenant
+    Mixin to filter querysets based on tenant association.
     """
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -73,15 +84,15 @@ class TenantMixin:
 
 class AuditMixin:
     """
-    Mixin to add audit fields
+    Mixin to automatically add audit fields to created/updated objects.
     """
     def perform_create(self, serializer):
         serializer.save(
-            created_by=self.request.user,
-            tenant=self.request.tenant
+            created_by=self.request.user,  # Audit: created_by
+            tenant=self.request.tenant      # Audit: tenant context
         )
 
     def perform_update(self, serializer):
         serializer.save(
-            updated_by=self.request.user
+            updated_by=self.request.user   # Audit: updated_by
         )
