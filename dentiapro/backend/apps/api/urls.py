@@ -6,11 +6,11 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register(r'cabinets', CabinetViewSet)
-router.register(r'appointments', AppointmentViewSet)
-router.register(r'medical-records', MedicalRecordViewSet)
-router.register(r'invoices', InvoiceViewSet)
-router.register(r'inventory', InventoryItemViewSet)
+router.register(r'cabinets', CabinetViewSet, basename='cabinet')
+router.register(r'appointments', AppointmentViewSet, basename='appointment')
+router.register(r'medical-records', MedicalRecordViewSet, basename='medicalrecord')
+router.register(r'invoices', InvoiceViewSet, basename='invoice')
+router.register(r'inventory', InventoryItemViewSet, basename='inventory')
 
 urlpatterns = [
     path('', include(router.urls)),

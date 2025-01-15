@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
 from apps.cabinet.models import Cabinet
 from apps.appointments.models import Appointment
 from apps.medical_records.models import MedicalRecord
@@ -9,37 +11,35 @@ from .serializers import (
     InvoiceSerializer, InventoryItemSerializer
 )
 
-class CabinetViewSet(viewsets.ModelViewSet):
+class TenantFilterMixin:
+    """Mixin to filter queryset by tenant."""
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if hasattr(self.request, 'tenant'):
+            return queryset.filter(tenant=self.request.tenant)
+        raise NotFound("Tenant not found.")
+
+class CabinetViewSet(TenantFilterMixin, viewsets.ModelViewSet):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return Cabinet.objects.filter(tenant=self.request.tenant)
-
-class AppointmentViewSet(viewsets.ModelViewSet):
+class AppointmentViewSet(TenantFilterMixin, viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return Appointment.objects.filter(cabinet__tenant=self.request.tenant)
-
-class MedicalRecordViewSet(viewsets.ModelViewSet):
+class MedicalRecordViewSet(TenantFilterMixin, viewsets.ModelViewSet):
     queryset = MedicalRecord.objects.all()
     serializer_class = MedicalRecordSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return MedicalRecord.objects.filter(patient__tenant=self.request.tenant)
-
-class InvoiceViewSet(viewsets.ModelViewSet):
+class InvoiceViewSet(TenantFilterMixin, viewsets.ModelViewSet):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return Invoice.objects.filter(patient__tenant=self.request.tenant)
-
-class InventoryItemViewSet(viewsets.ModelViewSet):
+class InventoryItemViewSet(TenantFilterMixin, viewsets.ModelViewSet):
     queryset = InventoryItem.objects.all()
     serializer_class = InventoryItemSerializer
-
-    def get_queryset(self):
-        return InventoryItem.objects.filter(cabinet__tenant=self.request.tenant)
+    permission_classes = [IsAuthenticated]
