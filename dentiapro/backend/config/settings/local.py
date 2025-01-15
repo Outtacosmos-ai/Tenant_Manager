@@ -1,13 +1,15 @@
 from .base import *
 
+# Enable debug mode for development
 DEBUG = True
 
+# Allowed hosts for local development
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Local secret key for development only
 SECRET_KEY = 'django-insecure-local-key-for-development'
 
-# Database
+# Local database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django_tenants.postgresql_backend',
@@ -19,10 +21,30 @@ DATABASES = {
     }
 }
 
-# CORS settings
+# CORS settings to allow all origins in development
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Debug toolbar settings
-INSTALLED_APPS += ['debug_toolbar']
-MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+INSTALLED_APPS += [
+    'debug_toolbar',
+]
+
+MIDDLEWARE += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+# IPs allowed for debug toolbar
 INTERNAL_IPS = ['127.0.0.1']
+
+# Swagger settings for development environment
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+        }
+    },
+    'DOC_EXPANSION': 'none',
+}
