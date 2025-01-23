@@ -4,36 +4,47 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                // Ensure Jenkins is set up with Git
                 checkout scm
             }
         }
-
         stage('Build') {
             steps {
-                sh 'docker-compose build'
+                script {
+                    // Build the Docker image for the web service
+                    sh 'docker build -t your-dockerhub-username/dentiapro-web:latest .'
+                }
             }
         }
-
         stage('Test') {
             steps {
-                sh 'docker-compose run --rm web python manage.py test'
+                script {
+                    // Spin up containers in the background
+                    sh 'docker-compose up -d db'
+                    // Wait a few seconds for DB to initialize
+                    sh 'sleep 10'
+                    // Run migrations & tests
+                    sh 'docker-compose run --rm web python manage.py migrate'
+                    sh 'docker-compose run --rm web python manage.py test'
+                    // Shut down the containers after tests
+                    sh 'docker-compose down'
+                }
             }
         }
-
-        stage('Deploy') {
-            when {
-                branch 'main'
-            }
+        stage('Push to Registry') {
             steps {
-                sh 'docker-compose up -d'
+                script {
+                    // If you want to push to Docker Hub or another registry:
+                    sh 'docker login -u your-dockerhub-username -p yourpassword'
+                    sh 'docker push your-dockerhub-username/dentiapro-web:latest'
+                }
             }
         }
-    }
-
-    post {
-        always {
-            sh 'docker-compose down'
+        stage('Deploy') {
+            steps {
+                // e.g., Deploy on a remote server or locally
+                echo "Deployment steps go here (SSH to server, run docker-compose, etc.)"
+            }
         }
     }
 }
-

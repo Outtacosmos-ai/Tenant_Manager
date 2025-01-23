@@ -1,60 +1,59 @@
-version: '3.8'
+version: '3.9'
 
 services:
+  db:
+    image: postgres:15
+    container_name: dentiapro_db
+    env_file:
+      - .env  # optional: load DB credentials from an .env file
+    environment:
+      POSTGRES_DB: dentiapro_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - dentiapro-net
+
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: dentiapro_web
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - ./backend:/app/backend
-    ports:
-      - "8000:8000"
+      - .:/app
     env_file:
-      - .env
+      - .env  # optional, if you store SECRET_KEY or other vars
+    environment:
+      # Or define DB credentials right here
+      DB_NAME: dentiapro_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
     depends_on:
       - db
-      - redis
-
-  db:
-    image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=dentiapro
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-
-  redis:
-    image: redis:6-alpine
     ports:
-      - "6379:6379"
+      - "8000:8000"  # Only if you want to access Django directly (e.g. for debug)
+    networks:
+      - dentiapro-net
 
   nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    image: nginx:latest
+    container_name: dentiapro_nginx
     depends_on:
       - web
-
-  prometheus:
-    image: prom/prometheus
     volumes:
-      - ./monitoring/prometheus:/etc/prometheus
-      - prometheus_data:/prometheus
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
-      - "9090:9090"
-
-  grafana:
-    image: grafana/grafana
-    volumes:
-      - grafana_data:/var/lib/grafana
-    ports:
-      - "3000:3000"
-    depends_on:
-      - prometheus
+      - "80:80"
+    networks:
+      - dentiapro-net
 
 volumes:
-  postgres_data:
-  prometheus_data:
-  grafana_data:
+  db_data:
+
+networks:
+  dentiapro-net:
+    driver: bridge
