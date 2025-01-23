@@ -13,5 +13,5 @@ router.register(r'invoices', InvoiceViewSet, basename='invoice')
 router.register(r'inventory', InventoryItemViewSet, basename='inventory')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', include(router.urls)),  # Include router-generated URLs
 ]

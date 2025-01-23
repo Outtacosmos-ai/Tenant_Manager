@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # Local apps
+    'corsheaders',
+    'apps.core.apps.CoreConfig',
     'apps.api.apps.ApiConfig',
     'apps.appointments.apps.AppointmentsConfig',
     'apps.authentication.apps.AuthenticationConfig',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

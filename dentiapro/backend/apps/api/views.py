@@ -1,11 +1,13 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound
+
 from apps.cabinet.models import Cabinet
 from apps.appointments.models import Appointment
 from apps.medical_records.models import MedicalRecord
 from apps.billing.models import Invoice
 from apps.inventory.models import InventoryItem
+
 from .serializers import (
     CabinetSerializer, AppointmentSerializer, MedicalRecordSerializer,
     InvoiceSerializer, InventoryItemSerializer

@@ -1,6 +1,7 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
+
 from apps.tenants.models import Tenant
 from apps.cabinet.models import Cabinet
 from apps.appointments.models import Appointment
