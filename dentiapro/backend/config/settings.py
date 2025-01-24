@@ -88,13 +88,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dentiapro',
-        'USER': 'postgres',
-        'PASSWORD': 'Admin@1234',  # Replace with your actual password
-        'HOST': 'localhost',
+        'NAME': 'dentiapro_db',
+        'USER': 'dentiapro_user',
+        'PASSWORD': 'your_password',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
+        'OPTIONS': {
+            'client_encoding': 'utf8',
+
     }
 }
+
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
