@@ -95,10 +95,8 @@ DATABASES = {
         'PORT': '5432',
         'OPTIONS': {
             'client_encoding': 'utf8',
-
-    }
-}
-
+        },
+    },
 }
 
 
