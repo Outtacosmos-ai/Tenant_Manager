@@ -1,4 +1,5 @@
 # tests/test_inventory_urls.py
+import decimal
 import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
@@ -31,7 +32,7 @@ def test_inventory_item_detail_url():
         name='Dental Mirror',
         category=category,
         quantity=100,
-        unit_price=Decimal('5.99'),
+        unit_price=decimal('5.99'),
         reorder_level=20
     )
 
