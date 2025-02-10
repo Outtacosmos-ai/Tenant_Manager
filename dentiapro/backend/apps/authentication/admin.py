@@ -1,4 +1,5 @@
-# This file is intentionally left empty as authentication is handled by Django's built-in User model.
+from django.contrib import admin
+from .models import User, Profile
 
-
-
+admin.site.register(User)
+admin.site.register(Profile)

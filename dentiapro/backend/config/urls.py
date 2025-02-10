@@ -18,7 +18,7 @@ jwt_urlpatterns = [
 
 # Application-specific API endpoints
 api_urlpatterns = [
-    path('auth/', include('apps.authentication.urls')),
+    path('api/auth/', include('apps.authentication.urls')),
     path('users/', include('apps.users.urls')),
     path('tenants/', include('apps.tenant.urls')),
     path('cabinets/', include('apps.cabinet.urls')),
